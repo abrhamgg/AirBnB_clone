@@ -33,9 +33,9 @@ class HBNBCommand(cmd.Cmd):
         if class name doesnt exist print *** class doesnt exists ***
         """
         if not args:
-            print("*** class name missing ***")
+            print("** class name missing **")
         if args not in arguments:
-            print("*** class doesn't exist ***")
+            print("** class doesn't exist **")
         else:
             b1 = BaseModel()
             b1.save()
@@ -46,53 +46,54 @@ class HBNBCommand(cmd.Cmd):
         instance based on class name and id
         """
         if not args:
-            print("*** class name missing ***")
+            print("** class name missing **")
         else:
             args = args.split()
             if len(args) != 2:
-                print("*** instance id missing ***")
+                print("** instance id missing **")
             elif args[0] not in arguments:
-                print("*** class doesn't exist ***")
+                print("** class doesn't exist **")
             else:
                 key = args[0] + '.' + args[1]
                 for k, v in storage.all().items():
                     if k == key:
                         print(v)
                         return
-                print("*** no instance found ***")
+                print("** no instance found **")
 
     def do_destroy(self, args):
         """Deletes an instance based on class name
         and id (save changes to JSON file)
         """
         if not args:
-            print("*** class name missing ***")
+            print("** class name missing **")
         else:
             args = args.split()
             if len(args) != 2:
-                print("*** instance id missing ***")
+                print("** instance id missing **")
             elif args[0] not in arguments:
-                print("*** class doesn't exist ***")
+                print("** class doesn't exist **")
             else:
                 key = args[0] + '.' + args[1]
                 if key in storage.all():
                     del storage.all()[key]
                     storage.save()
                 else:
-                    print("*** no instance found ***")
+                    print("** no instance found **")
 
     def do_all(self, args):
         """prints string representation of all
         instance based or not on the class name"""
-        if not args:
-            print("*** class doesn't exist ***")
+        arg_list = args.split()
+        objects = storage.all().values()
+        if not arg_list:
+            print([str(obj) for obj in objects])
         else:
-            args = args.split()
-            if args[0] in arguments:
-                for k in(storage.all()).values():
-                    print(str(k))
+            if arg_list[0] not in arguments:
+                print("** class doesn't exist **")
             else:
-                print("*** no instance found ***")
+                print([str(obj) for obj in objects
+                       if arg_list[0] in str(obj)])
 
     def do_update(self, args):
         """Updates an instance based on class name and id
