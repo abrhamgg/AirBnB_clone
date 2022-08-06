@@ -19,7 +19,8 @@ class MyTestCase(unittest.TestCase):
     def test_str_represenation(self):
         """Checks if the string representation is appropriate"""
         b = BaseModel()
-        self.assertEqual(str(b), "[BaseModel] ({}) {}".format(b.id, b.__dict__))
+        self.assertEqual(str(b), "[BaseModel] ({}) {}"
+                         .format(b.id, b.__dict__))
 
     def test_ids_unique(self):
         """checks if the generated ids are unique"""
@@ -84,7 +85,8 @@ class MyTestCase(unittest.TestCase):
         """checks that created_at is stored as a str obj in ISO format"""
         b1 = BaseModel()
         b1.to_dict()
-        self.assertNotEqual(type(b1.created_at), type(b1.created_at.isoformat()))
+        self.assertNotEqual(type(b1.created_at),
+                            type(b1.created_at.isoformat()))
 
     def test_when_kwargs_passed_empty(self):
         """checks that id, created_At, updated are automatically generated
@@ -200,7 +202,7 @@ class MyTestCase(unittest.TestCase):
         """Checks that to_dict() is a dict object not equal to __dict__"""
         bm = BaseModel()
         self.assertNotEqual(bm.to_dict(), bm.__dict__)
-        
+
 
 if __name__ == '__main__':
     unittest.main()
