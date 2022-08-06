@@ -44,18 +44,26 @@ class HBNBCommand(cmd.Cmd):
         arg = arg.split('.')
         if len(arg) < 2:
             return
+        if 'show' in arg[1]:
+            tok = arg[1].split('(')
+            tok[1] = tok[1].replace(')', "")
+            name = arg[0] + " " + tok[1]
+            return self.do_show(name)
         arg[1] = arg[1].replace('()', "")
-        if len(arg) != 2:
+        print(arg)
+        if len(arg) != 2 and len(arg) != 3:
             print("** invalid method **")
         else:
             for k, v in self.__classes.items():
                 if k == arg[0]:
                     for i, j in func_map.items():
                         if arg[1] == i:
-                            return j(k)
-                else:
-                    print("** Invalid Function **")
+                            if i == 'show':
+                              print(arg)
+                            else:
+                                return j(k)
             else:
+
                 print("** Invalid class name **")
 
     def do_quit(self, arg):
