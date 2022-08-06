@@ -18,6 +18,10 @@ class HBNBCommand(cmd.Cmd):
         cmd.Cmd.__init__(self)
         self.prompt = '(hbnb) '
 
+    def emptyline(self):
+        """Command to execute when empty line + <ENTER> key"""
+        pass
+
     def do_quit(self, args):
         """method to quit the interpreter"""
         return True
