@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 """Define the HBNB console"""
 import cmd
+import re
+
 from models import storage
 from models.base_model import BaseModel
 from models.state import State
@@ -20,14 +22,40 @@ class HBNBCommand(cmd.Cmd):
     """
     prompt = "(hbnb) "
     __classes = {
-        "BaseModel",
-        "User",
-        "State",
-        "City",
-        "Place",
-        "Amenity",
-        "Review"
+        "BaseModel": BaseModel,
+        "User": User,
+        "State": State,
+        "City": City,
+        "Place": Place,
+        "Amenity": Amenity,
+        "Review": Review
     }
+
+    def default(self, arg):
+        """method called when command is un recognized"""
+        func_map = {
+            "all": self.do_all,
+            "show": self.do_show,
+            "destroy": self.do_destroy,
+            "count": self.do_count,
+            "create": self.do_create,
+            "update": self.do_update
+        }
+        arg = arg.split('.')
+        arg[1] = arg[1].replace('()', "")
+        print(f"arg[0] is {arg[0]}")
+        print(f"arg[1] is {arg[1]}")
+        if len(arg) != 2:
+            print("** invalid method **")
+        else:
+            for k,v in self.__classes.items():
+                if k == arg[0]:
+                    for i, j in func_map.items():
+                        if arg[1] == i:
+                            print(i)
+                            return j(k)
+            else:
+                print("** Invalid class name **")
 
     def do_quit(self, arg):
         """Quit command to exit the program"""
@@ -49,7 +77,7 @@ class HBNBCommand(cmd.Cmd):
         argl = shlex.split(arg)
         if len(argl) == 0:
             print("** class name missing **")
-        elif argl[0] not in HBNBCommand.__classes:
+        elif argl[0] not in HBNBCommand.__classes.keys():
             print("** class doesn't exist **")
         else:
             print(eval(argl[0])().id)
@@ -63,7 +91,7 @@ class HBNBCommand(cmd.Cmd):
         objdict = storage.all()
         if len(argl) == 0:
             print("** class name missing **")
-        elif argl[0] not in HBNBCommand.__classes:
+        elif argl[0] not in HBNBCommand.__classes.keys():
             print("** class doesn't exist **")
         elif len(argl) == 1:
             print("** instance id missing **")
@@ -79,7 +107,7 @@ class HBNBCommand(cmd.Cmd):
         objdict = storage.all()
         if len(argl) == 0:
             print("** class name missing **")
-        elif argl[0] not in HBNBCommand.__classes:
+        elif argl[0] not in HBNBCommand.__classes.keys():
             print("** class doesn't exist **")
         elif len(argl) == 1:
             print("** instance id missing **")
@@ -94,7 +122,7 @@ class HBNBCommand(cmd.Cmd):
         Display string representations of all instances of a given class.
         If no class is specified, displays all instantiated objects."""
         argl = shlex.split(arg)
-        if len(argl) > 0 and argl[0] not in HBNBCommand.__classes:
+        if len(argl) > 0 and argl[0] not in HBNBCommand.__classes.keys():
             print("** class doesn't exist **")
         else:
             objl = []
@@ -115,7 +143,7 @@ class HBNBCommand(cmd.Cmd):
         if len(argl) == 0:
             print("** class name missing **")
             return False
-        if argl[0] not in HBNBCommand.__classes:
+        if argl[0] not in HBNBCommand.__classes.keys():
             print("** class doesn't exist **")
             return False
         if len(argl) == 1:
@@ -151,6 +179,11 @@ class HBNBCommand(cmd.Cmd):
                 else:
                     obj.__dict__[k] = v
         storage.save()
+
+    def do_count(self):
+        """count the number of instance"""
+        pass
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
