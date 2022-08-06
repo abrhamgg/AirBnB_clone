@@ -44,11 +44,17 @@ class HBNBCommand(cmd.Cmd):
         arg = arg.split('.')
         if len(arg) < 2:
             return
-        if 'show' in arg[1]:
-            tok = arg[1].split('(')
-            tok[1] = tok[1].replace(')', "")
-            name = arg[0] + " " + tok[1]
-            return self.do_show(name)
+        if 'show' in arg[1] or 'destroy' in arg[1]:
+            try:
+                tok = arg[1].split('(')
+                tok[1] = tok[1].replace(')', "")
+                name = arg[0] + " " + tok[1]
+                if 'show' in arg[1]:
+                    return self.do_show(name)
+                if 'destroy' in arg[1]:
+                    return self.do_destroy(name)
+            except Exception:
+                print("something wrong happend")
         arg[1] = arg[1].replace('()', "")
         print(arg)
         if len(arg) != 2 and len(arg) != 3:
@@ -58,10 +64,7 @@ class HBNBCommand(cmd.Cmd):
                 if k == arg[0]:
                     for i, j in func_map.items():
                         if arg[1] == i:
-                            if i == 'show':
-                              print(arg)
-                            else:
-                                return j(k)
+                            return j(k)
             else:
 
                 print("** Invalid class name **")
