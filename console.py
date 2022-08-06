@@ -42,18 +42,19 @@ class HBNBCommand(cmd.Cmd):
             "update": self.do_update
         }
         arg = arg.split('.')
+        if len(arg) < 2:
+            return
         arg[1] = arg[1].replace('()', "")
-        print(f"arg[0] is {arg[0]}")
-        print(f"arg[1] is {arg[1]}")
         if len(arg) != 2:
             print("** invalid method **")
         else:
-            for k,v in self.__classes.items():
+            for k, v in self.__classes.items():
                 if k == arg[0]:
                     for i, j in func_map.items():
                         if arg[1] == i:
-                            print(i)
                             return j(k)
+                else:
+                    print("** Invalid Function **")
             else:
                 print("** Invalid class name **")
 
@@ -180,9 +181,17 @@ class HBNBCommand(cmd.Cmd):
                     obj.__dict__[k] = v
         storage.save()
 
-    def do_count(self):
+    def do_count(self, args):
         """count the number of instance"""
-        pass
+        count = 0
+        if not args:
+            print("** method not identified **")
+        else:
+            for k in storage.all().keys():
+                k = k.split('.')
+                if k[0] == args:
+                    count += 1
+            print(count)
 
 
 if __name__ == "__main__":
