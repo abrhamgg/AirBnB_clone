@@ -22,6 +22,10 @@ class HBNBCommand(cmd.Cmd):
         """method to quit the interpreter"""
         return True
 
+    def help_quit(self):
+        """upadte the help command"""
+        print("Quit command to exit the program")
+
     def do_EOF(self, args):
         """end of file"""
         return True
