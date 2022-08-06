@@ -1,8 +1,10 @@
 #!/usr/bin/python3
 import unittest
+from time import sleep
 from datetime import datetime
 from models.base_model import BaseModel
 from uuid import uuid4
+import models
 import time
 
 
@@ -101,6 +103,104 @@ class MyTestCase(unittest.TestCase):
         b = BaseModel(**my_dict)
         self.assertEqual(b.id, my_dict['id'])
 
+    def test_new_method_not_called_when_dict_obj_is_passed_to_BaseModel(self):
+        """
+        Test that storage.new() is not called when a BaseModel obj is
+        created from a dict object
+        """
+        my_dict = {"id": uuid4(), "created_at": datetime.utcnow().isoformat(),
+                   "updated_at": datetime.utcnow().isoformat(),
+                   "name": "Firdaus"}
+        b = BaseModel(**my_dict)
+        self.assertTrue(b not in models.storage.all().values(),
+                        "{}".format(models.storage.all().values()))
+        del b
+
+        b = BaseModel()
+        self.assertTrue(b in models.storage.all().values())
+
+    def test_that_save_method_updates_updated_at_attr(self):
+        """
+        Checks that save() method updates 'updated_at' attribute
+        """
+        b = BaseModel()
+        sleep(0.02)
+        temp_update = b.updated_at
+        b.save()
+        self.assertLess(temp_update, b.updated_at)
+
+    def test_that_save_can_update_two_or_more_times(self):
+        """
+        Tests that the save method updates 'updated_at' two times
+        """
+        b = BaseModel()
+        sleep(0.02)
+        temp_update = b.updated_at
+        b.save()
+        sleep(0.02)
+        temp1_update = b.updated_at
+        self.assertLess(temp_update, temp1_update)
+        sleep(0.01)
+        b.save()
+        self.assertLess(temp1_update, b.updated_at)
+
+    def test_save_class_obj_in_file(self):
+        """Test that it saves new instance in a file"""
+        b = BaseModel()
+        b.save()
+        bid = f"BaseModel.{b.id}"
+        with open("file.json", encoding='utf-8') as f:
+            self.assertIn(bid, f.read())
+
+    def test_that_dict_contains_correct_keys(self):
+        """test that class dict contains correct keys"""
+        b = BaseModel()
+        attr = ['created_at', 'updated_at', '__class__', 'id']
+        b_dict = b.to_dict()
+        for att in b_dict:
+            self.assertIn(att, b_dict)
+
+    def test_to_dict_contains_added_attributes(self):
+        """
+        Checks that new attributes are also returned by to_dict()
+        """
+        b = BaseModel()
+        attrs = ["id", "created_at", "updated_at", "__class__"]
+        b.name = "Firdaus"
+        b.email = "firduas@gmail.com"
+        attrs.extend(["name", "email"])
+        for attr in attrs:
+            self.assertIn(attr, b.to_dict())
+
+    def test_to_dict_output(self):
+        """
+        Checks the output returned by to_dict()
+        """
+        b = BaseModel()
+        dt = datetime.now()
+        b.id = "12345"
+        b.created_at = b.updated_at = dt
+        test_dict = {
+            'id': "12345",
+            'created_at': dt.isoformat(),
+            'updated_at': dt.isoformat(),
+            '__class__': 'BaseModel'
+        }
+        self.assertDictEqual(test_dict, b.to_dict())
+
+    def test_to_dict_with_args(self):
+        """
+        Checks that TypeError is returned when argument is passed to to_dict()
+        """
+        b = BaseModel()
+        with self.assertRaises(TypeError):
+            b.to_dict(None)
+
+    def test_to_dict_not_dunder_dict(self):
+        """Checks that to_dict() is a dict object not equal to __dict__"""
+        bm = BaseModel()
+        self.assertNotEqual(bm.to_dict(), bm.__dict__)
+        
 
 if __name__ == '__main__':
     unittest.main()

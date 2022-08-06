@@ -8,7 +8,7 @@ import sys
 from models.base_model import BaseModel
 from models import storage
 
-arguments = ['BaseModel']
+arguments = ['BaseModel', 'User']
 
 
 class HBNBCommand(cmd.Cmd):
