@@ -20,7 +20,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_quit(self, args):
         """method to quit the interpreter"""
-        sys.exit(1)
+        return True
 
     def do_EOF(self, args):
         """end of file"""
