@@ -1,26 +1,26 @@
+.places {
+  max-width: 1000px;
+  margin: 0px auto;
+  font-size: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
 .places h1 {
-    font-size: 30px;
-    text-align: top left;
-    margin-bottom: 0;
-    display: block;
-}
-.places article {
-    width: 390px;
-    padding: 20px;
-    margin: 20px;
-    border: #FF5A5F 1px solid;
-    border-radius: 4px;
-    display: flex;
-    justify-content: center;
-}
-.places article h2 {
-    font-size: 30px;
-    margin-top: -20px;
-    margin-bottom: 15px;
+  width: 100%;
+  padding-left: 22px;
 }
 
-.place_list {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
+.places article {
+  width: 390px;
+  padding: 20px;
+  margin: 20px;
+  border: 1px solid red;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+}
+
+.places article h2 {
+  font-size: 30px;
+}
